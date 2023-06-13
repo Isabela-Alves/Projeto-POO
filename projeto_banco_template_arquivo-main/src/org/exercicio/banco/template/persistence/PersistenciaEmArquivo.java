@@ -88,6 +88,7 @@ public class PersistenciaEmArquivo implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void carregarDadosDeArquivo() {
 
 		try {
