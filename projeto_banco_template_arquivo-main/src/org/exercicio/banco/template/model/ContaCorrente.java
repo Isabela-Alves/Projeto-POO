@@ -79,13 +79,13 @@ public class ContaCorrente implements Serializable, IConta {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaPoupanca other = (ContaPoupanca) obj;
+		ContaCorrente other = (ContaCorrente) obj;
 		return Objects.equals(numeroConta, other.getNumeroConta());
 	}
 
 	@Override
 	public String toString() {
-		return "ContaBancaria [numeroConta=" + numeroConta + ", saldo=" + saldo + ", dataAbertura=" + dataAbertura
+		return "Conta Corrente [numeroConta=" + numeroConta + ", saldo=" + saldo + ", dataAbertura=" + dataAbertura
 				+ ", status=" + status + "]";
 	}
 
@@ -125,19 +125,27 @@ public class ContaCorrente implements Serializable, IConta {
 
 	}
 
-	public void transferir(IConta c, BigDecimal quantia) {
+	public void transferir(IConta c, BigDecimal quantia) { 
+		BigDecimal taxa = BigDecimal.ZERO;
+		BigDecimal taxaPorcentagem = new BigDecimal("0.1");
 		if (status && c.isStatus()) {
 			if (quantia.compareTo(BigDecimal.ZERO) < 0) {
 				System.err.println("Valor invalido para transferencia.");
-			} else if (quantia.compareTo(saldo) <= 0) {
-				setSaldo(saldo.subtract(quantia));
+			} else {
+				 if (c instanceof ContaPoupanca) {
+				taxa = quantia.multiply(taxaPorcentagem);
+				
+			}if (quantia.compareTo(saldo.add(taxa)) <= 0) {
+				setSaldo(saldo.subtract(quantia).subtract(taxa));
 				c.setSaldo(c.getSaldo().add(quantia));
 				c.getTransacoes().add(new RegistroTransacao(quantia, TipoTransacao.TRANSACAO_CREDITO, LocalDateTime.now()));
 				transacoes.add(new RegistroTransacao(quantia, TipoTransacao.TRANSACAO_DEBITO, LocalDateTime.now()));
 				System.out.println("Transferência realizada com sucesso.");
-			} else
+					} else {
 				System.err.println("Saldo insuficiente para realizar a transferencia.");
-		} else {
+					}
+			} 
+		}else {
 			System.err.println("Operacao nao pode ser realizada entre contas desativadas.");
 		}
 
