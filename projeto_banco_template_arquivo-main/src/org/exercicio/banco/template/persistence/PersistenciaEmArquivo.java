@@ -44,7 +44,7 @@ public class PersistenciaEmArquivo implements Serializable {
 
 	}
 	public void removerCliente(Cliente c) {
-		if (!cadastroClientes.contains(c)) {
+		if (cadastroClientes.contains(c)) {
 			cadastroClientes.remove(c);
 			salvarDadosEmArquivo();
 			System.out.println("Cliente removido com sucesso!");
